@@ -39,9 +39,9 @@ void YUYV422_TO_YUV420P(uint8_t *yuyv422, uint8_t *yuv420p, int video_width, int
               pOutFrame->data, pOutFrame->linesize);
     // 5、释放空间
     if (pInFrame)
-        av_free(pInFrame);
+        av_frame_free(&pInFrame);
     if (pOutFrame)
-        av_free(pOutFrame);
+        av_frame_free(&pOutFrame);
     if (pSwsCtx)
         sws_freeContext(pSwsCtx);
 }
@@ -82,7 +82,7 @@ int main() {
     // TODO：获取设备名称
     strDeviceName = "video=";
 #elif __APPLE__
-    strDeviceName = "0";
+    strDeviceName = "0:";
 #endif
 
     // 4、打开设备

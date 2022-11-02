@@ -6,11 +6,8 @@
 #define RTSP_AUDIOCAPTURE_H
 
 
-
 class AudioCapture {
-
 };
 
 
-
-#endif //RTSP_AUDIOCAPTURE_H
+#endif//RTSP_AUDIOCAPTURE_H
