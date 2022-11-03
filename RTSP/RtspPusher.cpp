@@ -3,6 +3,7 @@
 //
 
 #include "RtspPusher.h"
+#include "PacketQueue.h"
 #include "ffmpeg.h"
 #include "logger.h"
 
@@ -48,13 +49,23 @@ COMMON_CODE RtspPusher::Init(const Properties &properties) {
         return CODE_FAIL;
     }
 
+    // 创建缓存队列
+    pktQueue_ = new PacketQueue();
+
+
     return CODE_SUCCESS;
 }
 
 void RtspPusher::DeInit() {
+    if (pktQueue_) {
+        pktQueue_->Abort();
+    }
     if (fmt_ctx_) {
         avformat_free_context(fmt_ctx_);
         fmt_ctx_ = nullptr;
+    }
+    if (pktQueue_) {
+        SAFE_DELETE(pktQueue_);
     }
 }
 
@@ -77,6 +88,10 @@ COMMON_CODE RtspPusher::Connect() {
     LogTrace("call avformat_write_header over");
     // 启动线程
     return Start();
+}
+
+COMMON_CODE RtspPusher::PushPkt(AVPacket *pkt, const MEDIA_TYPE &type) {
+    return pktQueue_->Push(pkt, type);
 }
 
 void RtspPusher::Loop() {

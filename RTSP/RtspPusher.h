@@ -11,6 +11,7 @@ class AVFormatContext;
 class AVStream;
 class AVCodecContext;
 class PacketQueue;
+class AVPacket;
 
 class RtspPusher : public CommonLooper {
 public:
@@ -21,6 +22,7 @@ public:
     void DeInit();
 
     COMMON_CODE Connect();
+    COMMON_CODE PushPkt(AVPacket *pkt, const MEDIA_TYPE &type);
 
     virtual void Loop() override;
 

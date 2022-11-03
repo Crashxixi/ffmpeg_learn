@@ -30,11 +30,11 @@ int main() {
     // 音频编码
 
 
-    int iRet = worker.Init(properties);
-    if (iRet != CODE_SUCCESS){
-        LogError("push worker init fail");
-        return -1;
-    }
+        int iRet = worker.Init(properties);
+        if (iRet != CODE_SUCCESS){
+            LogError("push worker init fail");
+            return -1;
+        }
 
     return 0;
 }
