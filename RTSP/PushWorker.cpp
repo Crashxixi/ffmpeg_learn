@@ -3,6 +3,7 @@
 //
 
 #include "PushWorker.h"
+#include "PushTime.h"
 #include "RtspPusher.h"
 #include "VideoCapture.h"
 #include "VideoEncode.h"
@@ -123,6 +124,18 @@ void PushWorker::DeInit() {
 }
 
 void PushWorker::VideoCaptureCallBack(uint8_t *yuv, int32_t size) {
+    LogDebug("video capture call back, yuv data size = %d", size);
+
+    COMMON_CODE iRet = CODE_FAIL;
+    int64_t pts = (int64_t) PushTime::GetInstance()->get_audio_pts();
+    AVPacket *pkt = av_packet_alloc();
+    iRet = vEncode_->Encode(yuv, size, pts, pkt);
+    if (iRet == CODE_SUCCESS && pkt) {
+        rtspPusher_->PushPkt(pkt, MEDIA_VIDEO);
+    } else {
+        av_packet_free(&pkt);
+        LogError("pkt is null");
+    }
 }
 
 void PushWorker::AudioCaptureCallBack(uint8_t *yuv, int32_t size) {
